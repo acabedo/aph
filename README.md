@@ -10,6 +10,8 @@ Aplicación R/Shiny para el análisis prosódico tridimensional del habla siguie
 
 > **Nota sobre el tiempo de carga:** la demo se ejecuta mediante [Shinylive](https://shiny.posit.co/py/docs/shinylive.html) (R en WebAssembly, directamente en el navegador, sin servidor). La primera carga descarga el entorno de ejecución de R (~50 MB); puede tardar entre 30 y 90 segundos según la conexión. En local, la app arranca en menos de 3 segundos con `shiny::runApp("app.R")`.
 
+> **Funciones desactivadas en la demo:** algunas funciones no están disponibles en la versión online por limitaciones de WebAssembly, como la **exportación a HTML** o la **exportación en masa**. Para acceder a todas las funcionalidades, descarga `app.R` y ejecútalo localmente desde **RStudio** o **[Positron](https://positron.posit.co/)**.
+
 ---
 
 ## Archivos
@@ -83,9 +85,12 @@ Las columnas `f0_q1_hz`–`q3_to_q4_pct` son opcionales (se usan para mostrar cu
 
 ### 4. Exportar
 
-- **Exportar HTML**: descarga el gráfico + tabla en un único archivo `.html` autocontenido.
+- **Exportar HTML**: descarga el gráfico + tabla en un único archivo `.html` autocontenido. *(Desactivado en la demo online)*
 - **Exportar PNG**: usa el mecanismo nativo de Plotly (botón de cámara en la barra de herramientas del gráfico).
 - **Exportar tabla (.tsv)**: descarga la tabla APH en formato TSV.
+- **Exportación en masa**: disponible solo en local. *(Desactivado en la demo online)*
+
+> Para usar todas las funciones de exportación, descarga `app.R` y ejecútalo desde **RStudio** (`shiny::runApp("app.R")`) o desde **[Positron](https://positron.posit.co/)**.
 
 ---
 
