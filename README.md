@@ -142,4 +142,4 @@ Cantero Serena, F. J. (2019). Análisis prosódico del habla: más allá de la m
 
 ## Licencia
 
-Sin licencia explícita — uso académico y de investigación.
+GPL 3
