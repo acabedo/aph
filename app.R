@@ -29,11 +29,12 @@ SCRIPT_DIR <- normalizePath(getwd())
 SCRIPT1    <- file.path(SCRIPT_DIR, "whisper_batch_align.praat")
 SCRIPT2    <- file.path(SCRIPT_DIR, "Extraccion_datos_v6.praat")
 
-# Tres frases de ejemplo con F0 simulado (perfil declarativo, voz femenina).
+# Cuatro frases de ejemplo (tres simuladas + cantero2019 con datos reales del PDF).
 # Vocales con inflexión interna significativa (|q1_to_q2_pct| > 15%):
-#   ejemplo:  'a' de Villarreal (ascenso focal), 'e' tónica de teñiré (caída)
-#   ejemplo2: 'i' tónica de elige (pico focal)
-#   ejemplo3: 'o' de peor (pico inicial), 'a' de obliGAR (acento nuclear)
+#   ejemplo:     'a' de Villarreal (ascenso focal), 'e' tónica de teñiré (caída)
+#   ejemplo2:    'i' tónica de elige (pico focal)
+#   ejemplo3:    'o' de peor (pico inicial), 'a' de obliGAR (acento nuclear)
+#   cantero2019: 'e' de ellos (inflexión circumfleja, +26.6%) — datos reales PDF
 SAMPLE_CSV <- paste(c(
   "file\ttier_num\ttier_name\tlabel\ttime_start\ttime_end\tduration_ms\tf0_mean_hz\tint_mean_db\tf0_q1_hz\tf0_q2_hz\tf0_q3_hz\tf0_q4_hz\tq1_to_q2_pct\tq2_to_q3_pct\tq3_to_q4_pct",
   "ejemplo\t1\tutterances\tCuando el Villarreal gane la liga me teñiré el pelo\t0.00\t3.20\t3200\t213.5\t68.4\tNA\tNA\tNA\tNA\tNA\tNA\tNA",
@@ -148,7 +149,25 @@ SAMPLE_CSV <- paste(c(
   "ejemplo3\t3\tphones\ta\t2.74\t2.85\t110\t183.8\t62.9\t181.0\t184.0\t185.0\t182.0\t-1.7\t0.5\t-1.6",
   "ejemplo3\t3\tphones\tu\t3.22\t3.32\t100\t168.5\t61.5\t166.0\t169.0\t170.0\t167.0\t-1.8\t0.6\t-1.8",
   "ejemplo3\t3\tphones\te\t3.38\t3.52\t140\t156.8\t60.4\t154.0\t157.0\t158.0\t155.0\t-1.9\t0.6\t-1.9",
-  "ejemplo3\t3\tphones\to\t3.58\t3.75\t170\t143.2\t59.2\t141.0\t143.0\t145.0\t141.0\t-1.4\t1.4\t-2.8"
+  "ejemplo3\t3\tphones\to\t3.58\t3.75\t170\t143.2\t59.2\t141.0\t143.0\t145.0\t141.0\t-1.4\t1.4\t-2.8",
+  # ── cantero2019: «sigo en contacto con ellos» (Cantero Serena 2019) ─────────
+  # F0 derivado de C.Est.×1.12 (Hz[1]=112); tiempos reales (Fonseca 2013 corpus)
+  # Inflexión circumfleja en 'e' de «ellos»: q1(trough)=94 Hz → q2(peak)=119 Hz
+  "cantero2019\t1\tutterances\tsigo en contacto con ellos\t0.000\t1.450\t1450\t118.6\t75.5\tNA\tNA\tNA\tNA\tNA\tNA\tNA",
+  "cantero2019\t2\twords\tsigo\t0.000\t0.205\t205\t112.0\t81.6\tNA\tNA\tNA\tNA\tNA\tNA\tNA",
+  "cantero2019\t2\twords\ten\t0.205\t0.363\t158\t136.5\t77.7\tNA\tNA\tNA\tNA\tNA\tNA\tNA",
+  "cantero2019\t2\twords\tcontacto\t0.363\t0.779\t416\t125.7\t75.1\tNA\tNA\tNA\tNA\tNA\tNA\tNA",
+  "cantero2019\t2\twords\tcon\t0.779\t0.941\t162\t106.0\t73.3\tNA\tNA\tNA\tNA\tNA\tNA\tNA",
+  "cantero2019\t2\twords\tellos\t0.941\t1.311\t370\t99.5\t71.8\tNA\tNA\tNA\tNA\tNA\tNA\tNA",
+  "cantero2019\t3\tphones\ti\t0.112\t0.200\t88\t112.0\t81.6\t110.0\t112.0\t113.0\t111.0\t1.8\t0.9\t-1.8",
+  "cantero2019\t3\tphones\to\t0.205\t0.362\t157\t127.0\t77.7\t125.0\t127.0\t128.0\t126.0\t1.6\t0.8\t-1.6",
+  "cantero2019\t3\tphones\te\t0.205\t0.362\t119\t146.0\t77.7\t144.0\t146.0\t147.0\t145.0\t1.4\t0.7\t-1.4",
+  "cantero2019\t3\tphones\to\t0.365\t0.484\t154\t140.0\t75.0\t138.0\t140.0\t141.0\t139.0\t1.4\t0.7\t-1.4",
+  "cantero2019\t3\tphones\ta\t0.486\t0.640\t135\t124.0\t77.6\t122.0\t124.0\t125.0\t123.0\t1.6\t0.8\t-1.6",
+  "cantero2019\t3\tphones\to\t0.643\t0.778\t159\t113.0\t72.6\t111.0\t113.0\t114.0\t112.0\t1.8\t0.9\t-1.8",
+  "cantero2019\t3\tphones\to\t0.781\t0.940\t182\t106.0\t73.3\t104.0\t106.0\t107.0\t105.0\t1.9\t0.9\t-1.9",
+  "cantero2019\t3\tphones\te\t0.943\t1.125\t182\t106.0\t74.6\t94.0\t119.0\t109.0\t100.0\t26.6\t-8.4\t-8.3",
+  "cantero2019\t3\tphones\to\t1.128\t1.310\t137\t93.0\t69.0\t93.0\t93.0\t92.0\t91.0\t0.0\t-1.1\t-1.1"
 ), collapse = "\n")
 
 # ── Funciones auxiliares ─────────────────────────────────────────────────────
@@ -297,8 +316,8 @@ build_aph_tbl <- function(d, compact = FALSE) {
 }
 
 # Genera una tabla HTML compacta para exportación combinada
-make_tbl_html <- function(d, transpose = FALSE) {
-  base <- build_aph_tbl(d, compact = TRUE)
+make_tbl_html <- function(d = NULL, transpose = FALSE, tbl = NULL) {
+  base <- if (!is.null(tbl)) tbl else build_aph_tbl(d, compact = TRUE)
 
   tbl <- if (transpose) {
     m <- t(as.matrix(base[, -1]))
@@ -319,6 +338,217 @@ make_tbl_html <- function(d, transpose = FALSE) {
   paste0('<table style="border-collapse:collapse;width:100%;">',
          '<thead><tr>', hdr, '</tr></thead>',
          '<tbody>', rows, '</tbody></table>')
+}
+
+# ── make_aph_plot: función standalone para exportación y reactividad ─────────
+
+make_aph_plot <- function(d, file_label, utt_text, vars, rel, show_val, peak_pct, show_quartiles) {
+  f0_vals  <- if (rel) to_relative(d$f0_mean_hz)  else round(d$f0_mean_hz, 1)
+  int_vals <- if (rel) to_relative(d$int_mean_db) else round(d$int_mean_db, 1)
+  dur_vals <- if (rel) to_relative(d$ioi)         else round(d$ioi, 3)
+
+  x_labs_base <- d$x_label
+  y_left  <- if (rel) "Valor relativo (V₁ = 100)" else "F0 (Hz) / Intensidad (dB)"
+  units_f <- if (rel) "%" else " Hz"
+
+  hover_f0  <- paste0(d$label, " [", d$word, "]<br>F0: ",  f0_vals,  units_f)
+  hover_int <- paste0(d$label, " [", d$word, "]<br>Int: ", int_vals, if (rel) "%" else " dB")
+  hover_dur <- paste0(d$label, " [", d$word, "]<br>Dur: ", dur_vals, if (rel) "%" else " s")
+
+  has_q <- all(c("f0_q1_hz","f0_q2_hz","f0_q3_hz","f0_q4_hz",
+                 "q1_to_q2_pct","q2_to_q3_pct","q3_to_q4_pct") %in% names(d))
+  infl_idx <- integer(0)
+  if (has_q && "f0" %in% vars && isTRUE(show_quartiles)) {
+    infl_mask <- (!is.na(d$q1_to_q2_pct) & abs(d$q1_to_q2_pct) > peak_pct) |
+                 (!is.na(d$q2_to_q3_pct) & abs(d$q2_to_q3_pct) > peak_pct) |
+                 (!is.na(d$q3_to_q4_pct) & abs(d$q3_to_q4_pct) > peak_pct)
+    infl_idx <- which(infl_mask)
+  }
+
+  ref_f0  <- d$f0_mean_hz[which(!is.na(d$f0_mean_hz) & d$f0_mean_hz > 0)[1]]
+  scale_q <- function(hz) {
+    v <- ifelse(is.na(hz) | hz <= 0, NA_real_, hz)
+    if (rel) round(v / ref_f0 * 100, 2) else round(v, 1)
+  }
+
+  all_levels <- character(0); x_f0_pos <- character(0)
+  x_int_pos  <- character(0); x_dur_pos <- character(0)
+  y_f0_main  <- numeric(0)
+
+  for (i in seq_len(nrow(d))) {
+    base <- x_labs_base[i]
+    if (i %in% infl_idx) {
+      sub <- paste0(base, c(" ·Q1"," ·Q2"," ·Q3"," ·Q4"))
+      all_levels <- c(all_levels, sub)
+      x_f0_pos   <- c(x_f0_pos,  sub[2])
+      x_int_pos  <- c(x_int_pos, sub[2])
+      x_dur_pos  <- c(x_dur_pos, sub[1])
+      q2_val     <- scale_q(d$f0_q2_hz[i])
+      y_f0_main  <- c(y_f0_main, if (!is.na(q2_val)) q2_val else f0_vals[i])
+    } else {
+      all_levels <- c(all_levels, base)
+      x_f0_pos   <- c(x_f0_pos,  base)
+      x_int_pos  <- c(x_int_pos, base)
+      x_dur_pos  <- c(x_dur_pos, base)
+      y_f0_main  <- c(y_f0_main, f0_vals[i])
+    }
+  }
+
+  as_xfac <- function(v) factor(v, levels = all_levels)
+  fig <- plot_ly()
+
+  if ("dur" %in% vars) {
+    fig <- add_bars(fig,
+      x = as_xfac(x_dur_pos), y = dur_vals,
+      name  = if (rel) "Duración (%)" else "Duración (s)",
+      yaxis = if (!rel) "y2" else "y",
+      marker = list(color = "rgba(150,150,150,0.45)",
+                    line  = list(color = "grey60", width = 1)),
+      text         = if (show_val) as.character(dur_vals) else "",
+      textposition = if (show_val) "outside" else "none",
+      textfont     = list(size = 8, color = "grey40"),
+      hovertemplate = paste0(hover_dur, "<extra></extra>")
+    )
+  }
+
+  if ("f0" %in% vars) {
+    fig <- add_trace(fig,
+      x = as_xfac(x_f0_pos), y = y_f0_main,
+      type = "scatter",
+      mode = if (show_val) "lines+markers+text" else "lines+markers",
+      name   = if (rel) "F0 media (%)" else "F0 media (Hz)",
+      line   = list(color = "royalblue", width = 2.5),
+      marker = list(color = "royalblue", size = 8, symbol = "circle"),
+      text         = if (show_val) as.character(y_f0_main) else NULL,
+      textposition = "top center",
+      textfont     = list(size = 8, color = "royalblue"),
+      hovertemplate = paste0(hover_f0, "<extra></extra>")
+    )
+
+    f0_hz   <- d$f0_mean_hz
+    ascenso <- rep(NA_real_, nrow(d))
+    for (i in seq(2, nrow(d))) {
+      p <- f0_hz[i - 1]; curr <- f0_hz[i]
+      if (!is.na(p) && !is.na(curr) && p > 0 && curr > 0)
+        ascenso[i] <- (curr - p) / p * 100
+    }
+    above <- which(!is.na(ascenso) & ascenso > peak_pct)
+
+    if (length(above) > 0) {
+      first_i <- above[1]; last_i <- above[length(above)]
+      fig <- add_trace(fig,
+        x = as_xfac(x_f0_pos[first_i]), y = y_f0_main[first_i],
+        type = "scatter", mode = "markers",
+        name = paste0("★ Primer pico (>", peak_pct, "%)"),
+        marker = list(symbol = "star", size = 18, color = "red",
+                      line = list(color = "darkred", width = 1)),
+        hovertemplate = paste0(
+          "★ ", d$x_label[first_i], "<br>Ascenso: ",
+          sprintf("%+.1f%%", ascenso[first_i]),
+          "<br>F0: ", y_f0_main[first_i], units_f, "<extra></extra>"),
+        showlegend = TRUE
+      )
+      if (last_i != first_i) {
+        fig <- add_trace(fig,
+          x = as_xfac(x_f0_pos[last_i]), y = y_f0_main[last_i],
+          type = "scatter", mode = "markers",
+          name = paste0("○ Último pico (>", peak_pct, "%)"),
+          marker = list(symbol = "circle-open", size = 18, color = "red",
+                        line = list(color = "red", width = 2.5)),
+          hovertemplate = paste0(
+            "○ ", d$x_label[last_i], "<br>Ascenso: ",
+            sprintf("%+.1f%%", ascenso[last_i]),
+            "<br>F0: ", y_f0_main[last_i], units_f, "<extra></extra>"),
+          showlegend = TRUE
+        )
+      }
+    }
+
+    if (length(infl_idx) > 0) {
+      q_x <- character(0); q_y <- numeric(0)
+      q_hov <- character(0); q_txt <- character(0)
+      for (i in infl_idx) {
+        base <- x_labs_base[i]
+        sub  <- paste0(base, c(" ·Q1"," ·Q2"," ·Q3"," ·Q4"))
+        qys  <- c(scale_q(d$f0_q1_hz[i]), scale_q(d$f0_q2_hz[i]),
+                  scale_q(d$f0_q3_hz[i]), scale_q(d$f0_q4_hz[i]))
+        q_x   <- c(q_x,   sub, NA_character_)
+        q_y   <- c(q_y,   qys, NA_real_)
+        q_hov <- c(q_hov,
+          paste0(base, "<br>", c("Q1","Q2","Q3","Q4"), ": ",
+                 ifelse(is.na(qys), "—", paste0(qys, units_f)),
+                 "<extra></extra>"),
+          "<extra></extra>")
+        q_txt <- c(q_txt,
+          ifelse(is.na(qys), "", paste0(c("Q1:","Q2:","Q3:","Q4:"), qys)),
+          "")
+      }
+      fig <- add_trace(fig,
+        x = factor(q_x, levels = all_levels), y = q_y,
+        type = "scatter",
+        mode = if (show_val) "lines+markers+text" else "lines+markers",
+        name = paste0("Q1–Q4 inflexión (>", peak_pct, "%)"),
+        marker = list(symbol = "circle", size = 12, color = "purple",
+                      line   = list(color = "white", width = 1.5)),
+        line          = list(color = "purple", width = 2.5, dash = "dot"),
+        text          = if (show_val) q_txt else NULL,
+        textposition  = "top center",
+        textfont      = list(size = 8, color = "purple"),
+        hovertemplate = q_hov,
+        showlegend    = TRUE
+      )
+    }
+  }
+
+  if ("int" %in% vars) {
+    fig <- add_trace(fig,
+      x = as_xfac(x_int_pos), y = int_vals,
+      type = "scatter",
+      mode = if (show_val) "lines+markers+text" else "lines+markers",
+      name   = if (rel) "Intensidad (%)" else "Intensidad media (dB)",
+      line   = list(color = "#DAA520", width = 2.5, dash = "dash"),
+      marker = list(color = "#DAA520", size = 8, symbol = "diamond"),
+      text         = if (show_val) as.character(int_vals) else NULL,
+      textposition = "bottom center",
+      textfont     = list(size = 8, color = "#b8860b"),
+      hovertemplate = paste0(hover_int, "<extra></extra>")
+    )
+  }
+
+  fname_safe <- gsub("[^A-Za-z0-9]", "_", file_label)
+
+  layout_base <- list(
+    height = 540,
+    title  = list(
+      text = paste0("<b>APH</b>  —  ", file_label,
+                    "<br><i style='font-size:11px'>", utt_text, "</i>"),
+      font = list(size = 13)
+    ),
+    xaxis  = list(title = "", tickangle = -35, showgrid = FALSE,
+                  tickfont = list(size = 10)),
+    yaxis  = list(title = y_left, zeroline = FALSE, showgrid = TRUE,
+                  gridcolor = "rgba(200,200,200,0.4)", titlefont = list(size = 11)),
+    legend = list(orientation = "h", xanchor = "center", x = 0.5,
+                  yanchor = "top", y = -0.22, font = list(size = 10)),
+    hovermode     = "x unified",
+    barmode       = "overlay",
+    plot_bgcolor  = "white",
+    paper_bgcolor = "white",
+    margin        = list(t = 75, b = 140, l = 70, r = 60)
+  )
+
+  if (!rel && "dur" %in% vars) {
+    layout_base$yaxis2 <- list(
+      title = "Duración inter-onset (s)", overlaying = "y", side = "right",
+      showgrid = FALSE, zeroline = FALSE, titlefont = list(size = 11)
+    )
+  }
+
+  layout(fig, .list = layout_base) %>%
+    config(toImageButtonOptions = list(
+      format = "png", filename = paste0("APH_", fname_safe),
+      width = 900, height = 540, scale = 3
+    ))
 }
 
 # ── UI ───────────────────────────────────────────────────────────────────────
@@ -346,7 +576,7 @@ ui <- fluidPage(
       $(document).on('click', '#toggle_sidebar', function() {
         $('body').toggleClass('sidebar-hidden');
         var hidden = $('body').hasClass('sidebar-hidden');
-        $(this).text(hidden ? '☰ Mostrar' : '✕ Ocultar');
+        $(this).text(hidden ? '☰ Mostrar barra lateral' : '✕ Ocultar barra lateral');
         $(window).trigger('resize');
       });
     "))
@@ -387,7 +617,18 @@ ui <- fluidPage(
           tags$br(),
           "○ rojo = última vocal con ese ascenso",
           tags$br(),
-          "● morado ×4 = Q1 Q2 Q3 Q4 de la vocal con inflexión interna")
+          "● morado ×4 = Q1 Q2 Q3 Q4 de la vocal con inflexión interna"),
+
+        hr(),
+        p(class = "section-title", "Columnas de la tabla"),
+        checkboxGroupInput("tbl_cols_show", NULL,
+          choices  = c("F0 (Hz y %)"         = "f0",
+                       "Intensidad (dB y %)" = "int",
+                       "Duración IOI"        = "dur",
+                       "Q1–Q4 (Hz)"          = "q_hz",
+                       "Q1–Q4 (%)"           = "q_pct"),
+          selected = c("f0", "int", "dur")
+        )
       )
     ),
 
@@ -418,7 +659,7 @@ ui <- fluidPage(
           br(),
           div(class = "note-small",
             tags$strong("Datos de ejemplo:"),
-            " tres frases con F0 simulado: «Cuando el Villarreal…» (ejemplo), «Es el vecino el que elige al alcalde…» (ejemplo2) y «Lo peor que hacen los malos…» (ejemplo3).",
+            " cuatro frases: «Cuando el Villarreal…» (ejemplo), «Es el vecino el que elige…» (ejemplo2), «Lo peor que hacen los malos…» (ejemplo3) y «sigo en contacto con ellos» (cantero2019 — datos reales de Cantero Serena 2019).",
             tags$br(),
             "Tiers requeridos: ", tags$code("utterances"), ", ",
             tags$code("words"), ", ", tags$code("phones"),
@@ -473,6 +714,27 @@ ui <- fluidPage(
                           "Plotly.downloadImage(document.getElementById('aph_plot'),",
                           "{format:'png',filename:'APH',width:900,height:540,scale:3});}"
                         ))
+          ),
+
+          # ── Exportación en lote ────────────────────────────────────────
+          div(class = "export-row", style = "margin-top:6px;",
+            radioButtons("batch_scope", NULL,
+              choices  = c("Utterances del archivo actual"              = "one_file",
+                           "Todas las utterances (todos los archivos)"  = "all_files"),
+              selected = "one_file", inline = TRUE
+            )
+          ),
+          div(class = "export-row",
+            numericInput("batch_max", "Máx. gráficos:",
+                         value = 10, min = 1, max = 50, step = 1, width = "130px"),
+            downloadButton("dl_batch_zip", "Exportar lote (ZIP)",
+                           class = "btn btn-warning btn-sm")
+          ),
+          p(class = "note-small",
+            "⚠ Requiere el paquete ", tags$code("webshot2"),
+            " (PNG a 300 DPI con Chrome). ",
+            "Dado el alto coste de computación, se recomienda no exportar más de 10–15 gráficos a la vez. ",
+            "Nombre: ", tags$code("{archivo}_{utterance}.png"), "."
           ),
 
           hr(),
@@ -686,235 +948,34 @@ server <- function(input, output, session) {
 
   # — Gráfico APH ───────────────────────────────────────────────────────────
   build_plot <- reactive({
-    d    <- aph_d()
-    vars <- input$vars
-    rel  <- input$scale == "rel"
-
-    f0_vals  <- if (rel) to_relative(d$f0_mean_hz)  else round(d$f0_mean_hz, 1)
-    int_vals <- if (rel) to_relative(d$int_mean_db) else round(d$int_mean_db, 1)
-    dur_vals <- if (rel) to_relative(d$ioi)         else round(d$ioi, 3)
-
-    x_labs_base <- d$x_label
-    y_left  <- if (rel) "Valor relativo (V₁ = 100)" else "F0 (Hz) / Intensidad (dB)"
-    units_f <- if (rel) "%" else " Hz"
-
-    hover_f0  <- paste0(d$label, " [", d$word, "]<br>F0: ",  f0_vals,  units_f)
-    hover_int <- paste0(d$label, " [", d$word, "]<br>Int: ", int_vals, if (rel) "%" else " dB")
-    hover_dur <- paste0(d$label, " [", d$word, "]<br>Dur: ", dur_vals, if (rel) "%" else " s")
-
-    show_val <- isTRUE(input$show_values)
-    peak_pct <- if (!is.null(input$peak_pct) && !is.na(input$peak_pct)) input$peak_pct else 15
-
-    # ── Cuartiles: detectar vocales con inflexión interna significativa ─────
-    has_q <- all(c("f0_q1_hz","f0_q2_hz","f0_q3_hz","f0_q4_hz",
-                   "q1_to_q2_pct","q2_to_q3_pct","q3_to_q4_pct") %in% names(d))
-    infl_idx <- integer(0)
-    if (has_q && "f0" %in% vars && isTRUE(input$show_quartiles)) {
-      infl_mask <- (!is.na(d$q1_to_q2_pct) & abs(d$q1_to_q2_pct) > peak_pct) |
-                   (!is.na(d$q2_to_q3_pct) & abs(d$q2_to_q3_pct) > peak_pct) |
-                   (!is.na(d$q3_to_q4_pct) & abs(d$q3_to_q4_pct) > peak_pct)
-      infl_idx <- which(infl_mask)
-    }
-
-    ref_f0  <- d$f0_mean_hz[which(!is.na(d$f0_mean_hz) & d$f0_mean_hz > 0)[1]]
-    scale_q <- function(hz) {
-      v <- ifelse(is.na(hz) | hz <= 0, NA_real_, hz)
-      if (rel) round(v / ref_f0 * 100, 2) else round(v, 1)
-    }
-
-    # ── Construir factor x expandido ─────────────────────────────────────────
-    all_levels  <- character(0)
-    x_f0_pos    <- character(0)
-    x_int_pos   <- character(0)
-    x_dur_pos   <- character(0)
-    y_f0_main   <- numeric(0)
-
-    for (i in seq_len(nrow(d))) {
-      base <- x_labs_base[i]
-      if (i %in% infl_idx) {
-        sub <- paste0(base, c(" ·Q1"," ·Q2"," ·Q3"," ·Q4"))
-        all_levels <- c(all_levels, sub)
-        x_f0_pos   <- c(x_f0_pos,  sub[2])
-        x_int_pos  <- c(x_int_pos, sub[2])
-        x_dur_pos  <- c(x_dur_pos, sub[1])
-        q2_val     <- scale_q(d$f0_q2_hz[i])
-        y_f0_main  <- c(y_f0_main, if (!is.na(q2_val)) q2_val else f0_vals[i])
-      } else {
-        all_levels <- c(all_levels, base)
-        x_f0_pos   <- c(x_f0_pos,  base)
-        x_int_pos  <- c(x_int_pos, base)
-        x_dur_pos  <- c(x_dur_pos, base)
-        y_f0_main  <- c(y_f0_main, f0_vals[i])
-      }
-    }
-
-    as_xfac <- function(v) factor(v, levels = all_levels)
-
-    fig <- plot_ly()
-
-    # ── Barras de duración ───────────────────────────────────────────────────
-    if ("dur" %in% vars) {
-      fig <- add_bars(fig,
-        x = as_xfac(x_dur_pos), y = dur_vals,
-        name  = if (rel) "Duración (%)" else "Duración (s)",
-        yaxis = if (!rel) "y2" else "y",
-        marker = list(color = "rgba(150,150,150,0.45)",
-                      line  = list(color = "grey60", width = 1)),
-        text         = if (show_val) as.character(dur_vals) else "",
-        textposition = if (show_val) "outside" else "none",
-        textfont     = list(size = 8, color = "grey40"),
-        hovertemplate = paste0(hover_dur, "<extra></extra>")
-      )
-    }
-
-    # ── Línea F0 (azul) ──────────────────────────────────────────────────────
-    if ("f0" %in% vars) {
-      fig <- add_trace(fig,
-        x = as_xfac(x_f0_pos), y = y_f0_main,
-        type = "scatter",
-        mode = if (show_val) "lines+markers+text" else "lines+markers",
-        name   = if (rel) "F0 media (%)" else "F0 media (Hz)",
-        line   = list(color = "royalblue", width = 2.5),
-        marker = list(color = "royalblue", size = 8, symbol = "circle"),
-        text         = if (show_val) as.character(y_f0_main) else NULL,
-        textposition = "top center",
-        textfont     = list(size = 8, color = "royalblue"),
-        hovertemplate = paste0(hover_f0, "<extra></extra>")
-      )
-
-      # ── Marcadores de pico tonal ──────────────────────────────────────────
-      f0_hz   <- d$f0_mean_hz
-      ascenso <- rep(NA_real_, nrow(d))
-      for (i in seq(2, nrow(d))) {
-        p <- f0_hz[i - 1]; curr <- f0_hz[i]
-        if (!is.na(p) && !is.na(curr) && p > 0 && curr > 0)
-          ascenso[i] <- (curr - p) / p * 100
-      }
-      above <- which(!is.na(ascenso) & ascenso > peak_pct)
-
-      if (length(above) > 0) {
-        first_i <- above[1]; last_i <- above[length(above)]
-        fig <- add_trace(fig,
-          x = as_xfac(x_f0_pos[first_i]), y = y_f0_main[first_i],
-          type = "scatter", mode = "markers",
-          name = paste0("★ Primer pico (>", peak_pct, "%)"),
-          marker = list(symbol = "star", size = 18, color = "red",
-                        line = list(color = "darkred", width = 1)),
-          hovertemplate = paste0(
-            "★ ", d$x_label[first_i], "<br>Ascenso: ",
-            sprintf("%+.1f%%", ascenso[first_i]),
-            "<br>F0: ", y_f0_main[first_i], units_f, "<extra></extra>"),
-          showlegend = TRUE
-        )
-        if (last_i != first_i) {
-          fig <- add_trace(fig,
-            x = as_xfac(x_f0_pos[last_i]), y = y_f0_main[last_i],
-            type = "scatter", mode = "markers",
-            name = paste0("○ Último pico (>", peak_pct, "%)"),
-            marker = list(symbol = "circle-open", size = 18, color = "red",
-                          line = list(color = "red", width = 2.5)),
-            hovertemplate = paste0(
-              "○ ", d$x_label[last_i], "<br>Ascenso: ",
-              sprintf("%+.1f%%", ascenso[last_i]),
-              "<br>F0: ", y_f0_main[last_i], units_f, "<extra></extra>"),
-            showlegend = TRUE
-          )
-        }
-      }
-
-      # ── Curva de cuartiles morada ─────────────────────────────────────────
-      if (length(infl_idx) > 0) {
-        q_x <- character(0); q_y <- numeric(0); q_hov <- character(0)
-        for (i in infl_idx) {
-          base <- x_labs_base[i]
-          sub  <- paste0(base, c(" ·Q1"," ·Q2"," ·Q3"," ·Q4"))
-          qys  <- c(scale_q(d$f0_q1_hz[i]), scale_q(d$f0_q2_hz[i]),
-                    scale_q(d$f0_q3_hz[i]), scale_q(d$f0_q4_hz[i]))
-          q_x   <- c(q_x,   sub, NA_character_)
-          q_y   <- c(q_y,   qys, NA_real_)
-          q_hov <- c(q_hov,
-            paste0(base, "<br>", c("Q1","Q2","Q3","Q4"), ": ",
-                   ifelse(is.na(qys), "—", paste0(qys, units_f)),
-                   "<extra></extra>"),
-            "<extra></extra>")
-        }
-        fig <- add_trace(fig,
-          x = factor(q_x, levels = all_levels), y = q_y,
-          type = "scatter", mode = "lines+markers",
-          name = paste0("Q1–Q4 inflexión (>", peak_pct, "%)"),
-          marker = list(symbol = "circle", size = 12, color = "purple",
-                        line   = list(color = "white", width = 1.5)),
-          line          = list(color = "purple", width = 2.5, dash = "dot"),
-          hovertemplate = q_hov,
-          showlegend    = TRUE
-        )
-      }
-    }
-
-    # ── Línea intensidad (amarilla discontinua) ──────────────────────────────
-    if ("int" %in% vars) {
-      fig <- add_trace(fig,
-        x = as_xfac(x_int_pos), y = int_vals,
-        type = "scatter",
-        mode = if (show_val) "lines+markers+text" else "lines+markers",
-        name   = if (rel) "Intensidad (%)" else "Intensidad media (dB)",
-        line   = list(color = "#DAA520", width = 2.5, dash = "dash"),
-        marker = list(color = "#DAA520", size = 8, symbol = "diamond"),
-        text         = if (show_val) as.character(int_vals) else NULL,
-        textposition = "bottom center",
-        textfont     = list(size = 8, color = "#b8860b"),
-        hovertemplate = paste0(hover_int, "<extra></extra>")
-      )
-    }
-
-    # ── Layout ───────────────────────────────────────────────────────────────
+    d        <- aph_d()
     utt_text <- rv$df %>%
       filter(file == input$sel_file, tier_name == input$sel_utt_tier,
              abs(time_start - as.numeric(input$sel_utt)) < 0.001) %>%
       slice(1) %>% pull(label)
-
-    fname_safe <- gsub("[^A-Za-z0-9]", "_", input$sel_file)
-
-    layout_base <- list(
-      height = 540,
-      title  = list(
-        text = paste0("<b>APH</b>  —  ", input$sel_file,
-                      "<br><i style='font-size:11px'>", utt_text, "</i>"),
-        font = list(size = 13)
-      ),
-      xaxis  = list(title = "", tickangle = -35, showgrid = FALSE,
-                    tickfont = list(size = 10)),
-      yaxis  = list(title = y_left, zeroline = FALSE, showgrid = TRUE,
-                    gridcolor = "rgba(200,200,200,0.4)", titlefont = list(size = 11)),
-      legend = list(orientation = "h", xanchor = "center", x = 0.5,
-                    yanchor = "top", y = -0.22, font = list(size = 10)),
-      hovermode     = "x unified",
-      barmode       = "overlay",
-      plot_bgcolor  = "white",
-      paper_bgcolor = "white",
-      margin        = list(t = 75, b = 140, l = 70, r = 60)
-    )
-
-    if (!rel && "dur" %in% vars) {
-      layout_base$yaxis2 <- list(
-        title = "Duración inter-onset (s)", overlaying = "y", side = "right",
-        showgrid = FALSE, zeroline = FALSE, titlefont = list(size = 11)
-      )
-    }
-
-    layout(fig, .list = layout_base) %>%
-      config(toImageButtonOptions = list(
-        format = "png", filename = paste0("APH_", fname_safe),
-        width = 900, height = 540, scale = 3
-      ))
+    peak_pct <- if (!is.null(input$peak_pct) && !is.na(input$peak_pct)) input$peak_pct else 15
+    make_aph_plot(d, input$sel_file, utt_text,
+                  input$vars, input$scale == "rel",
+                  isTRUE(input$show_values), peak_pct, isTRUE(input$show_quartiles))
   })
 
   output$aph_plot <- renderPlotly({ build_plot() })
 
-  # — Tabla resumen APH ─────────────────────────────────────────────────────
-  output$aph_table <- renderTable({
+  # — Tabla resumen APH (columnas filtradas) ───────────────────────────────
+  tbl_filtered <- reactive({
     tbl <- build_aph_tbl(aph_d())
+    sel <- if (!is.null(input$tbl_cols_show)) input$tbl_cols_show else c("f0","int","dur")
+    keep <- c("Vocal",
+              if ("f0"    %in% sel) c("F0 (Hz)",   "F0 (%)")                          else NULL,
+              if ("int"   %in% sel) c("Int. (dB)", "Int. (%)")                        else NULL,
+              if ("dur"   %in% sel) c("Dur. (s)",  "Dur. (%)")                        else NULL,
+              if ("q_hz"  %in% sel) c("Q1 (Hz)","Q2 (Hz)","Q3 (Hz)","Q4 (Hz)")       else NULL,
+              if ("q_pct" %in% sel) c("Q1 (%)","Q2 (%)","Q3 (%)","Q4 (%)")           else NULL)
+    tbl[, intersect(keep, names(tbl)), drop = FALSE]
+  })
 
+  tbl_data <- reactive({
+    tbl <- tbl_filtered()
     if (isTRUE(input$tbl_transpose)) {
       t_mat <- t(as.matrix(tbl[, -1]))
       colnames(t_mat) <- tbl$Vocal
@@ -922,6 +983,10 @@ server <- function(input, output, session) {
     } else {
       tbl
     }
+  })
+
+  output$aph_table <- renderTable({
+    tbl_data()
   }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
 
   # — Exportar tabla (.tsv) ─────────────────────────────────────────────────
@@ -930,13 +995,7 @@ server <- function(input, output, session) {
       paste0("APH_tabla_", gsub("[^A-Za-z0-9]", "_", input$sel_file), "_", Sys.Date(), ".txt")
     },
     content = function(file) {
-      tbl <- build_aph_tbl(aph_d())
-      if (isTRUE(input$tbl_transpose)) {
-        t_mat <- t(as.matrix(tbl[, -1]))
-        colnames(t_mat) <- tbl$Vocal
-        tbl <- cbind(Variable = rownames(t_mat), as.data.frame(t_mat, check.names = FALSE))
-      }
-      write.table(tbl, file, sep = "\t", row.names = FALSE,
+      write.table(tbl_data(), file, sep = "\t", row.names = FALSE,
                   quote = FALSE, fileEncoding = "UTF-8")
     }
   )
@@ -947,8 +1006,6 @@ server <- function(input, output, session) {
       paste0("APH_", gsub("[^A-Za-z0-9]", "_", input$sel_file), "_", Sys.Date(), ".html")
     },
     content = function(file) {
-      d <- aph_d()
-
       fig_exp <- build_plot() %>%
         plotly::layout(
           height = 540,
@@ -973,7 +1030,7 @@ server <- function(input, output, session) {
         '<div style="padding:0 18px 24px 18px;background:white;">',
         '<p style="font-size:10px;font-weight:600;color:#444;margin:10px 0 3px;',
         'font-family:Arial,sans-serif;">Tabla resumen APH</p>',
-        make_tbl_html(d, transpose = isTRUE(input$tbl_transpose)),
+        make_tbl_html(transpose = isTRUE(input$tbl_transpose), tbl = tbl_filtered()),
         '</div>'
       )
 
@@ -998,6 +1055,96 @@ server <- function(input, output, session) {
       }
 
       write_html(combined_html, file)
+    }
+  )
+
+  # — Exportar lote de gráficos (ZIP con PNGs a 300 DPI) ──────────────────
+  # Nota: webshot2 requiere Chrome y no funciona en Shinylive/WebAssembly.
+  # Se referencia de forma indirecta para evitar su inclusión en la demo.
+  output$dl_batch_zip <- downloadHandler(
+    filename = function() paste0("APH_lote_", Sys.Date(), ".zip"),
+    content = function(zip_path) {
+      req(rv$df)
+      ws2 <- "webshot2"
+      if (!requireNamespace(ws2, quietly = TRUE)) {
+        showNotification(
+          "Se requiere el paquete webshot2: install.packages('webshot2')",
+          type = "error", duration = 10
+        )
+        return(NULL)
+      }
+      webshot_fn <- getExportedValue(ws2, "webshot")
+
+      peak_pct <- if (!is.null(input$peak_pct) && !is.na(input$peak_pct)) input$peak_pct else 15
+      max_n    <- max(1L, min(as.integer(input$batch_max), 50L))
+
+      files_to_use <- if (identical(input$batch_scope, "all_files")) {
+        sort(unique(rv$df$file))
+      } else {
+        input$sel_file
+      }
+
+      utt_rows <- dplyr::bind_rows(lapply(files_to_use, function(f) {
+        rv$df %>%
+          filter(file == f, tier_name == input$sel_utt_tier,
+                 nchar(trimws(label)) > 0) %>%
+          arrange(time_start) %>%
+          mutate(file_id = f)
+      }))
+
+      if (nrow(utt_rows) == 0) {
+        showNotification("No se encontraron utterances.", type = "error")
+        return(NULL)
+      }
+      utt_rows <- head(utt_rows, max_n)
+
+      withProgress(message = "Generando PNGs…", value = 0, {
+        tmp_dir   <- tempfile(); dir.create(tmp_dir)
+        on.exit(unlink(tmp_dir, recursive = TRUE), add = TRUE)
+        png_files <- character(0)
+
+        for (k in seq_len(nrow(utt_rows))) {
+          incProgress(1 / nrow(utt_rows),
+                      detail = paste0(k, "/", nrow(utt_rows)))
+          utt_row <- utt_rows[k, ]
+          d <- tryCatch(
+            prepare_aph(rv$df, utt_row$file_id,
+                        input$sel_utt_tier, input$sel_word_tier, input$sel_phone_tier,
+                        utt_row$time_start),
+            error = function(e) NULL
+          )
+          if (is.null(d) || nrow(d) == 0) next
+
+          fig <- make_aph_plot(d, utt_row$file_id, utt_row$label,
+                               input$vars, input$scale == "rel",
+                               FALSE, peak_pct, isTRUE(input$show_quartiles))
+
+          safe_file <- gsub("[^A-Za-z0-9]", "_", utt_row$file_id)
+          safe_utt  <- substr(
+            gsub("[[:space:]]+", "_", gsub("[^A-Za-zÀ-ÿ0-9 ]", "", utt_row$label)),
+            1L, 60L
+          )
+          out_path <- file.path(tmp_dir, paste0(safe_file, "_", safe_utt, ".png"))
+          tmp_html <- tempfile(fileext = ".html")
+
+          tryCatch({
+            htmlwidgets::saveWidget(fig, tmp_html, selfcontained = TRUE)
+            webshot_fn(tmp_html, file = out_path,
+                       vwidth = 900, vheight = 560,
+                       zoom = 3.125, delay = 1.5, quiet = TRUE)
+            if (file.exists(out_path) && file.size(out_path) > 0)
+              png_files <- c(png_files, out_path)
+          }, error = function(e) NULL)
+          unlink(tmp_html)
+        }
+
+        if (length(png_files) == 0) {
+          showNotification("No se generaron imágenes. ¿Está instalado Chrome/webshot2?",
+                           type = "error")
+          return(NULL)
+        }
+        utils::zip(zip_path, files = png_files, flags = "-j")
+      })
     }
   )
 }
